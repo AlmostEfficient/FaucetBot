@@ -1,0 +1,10 @@
+{
+  "clientId": "",
+  "guildId": "",
+  "token": "",
+	"ALCHEMY_RINKEBY_URL": "",
+	"PRIVATE_KEY": "",
+	"ADDRESS": "",
+	"cooldown": 3600000,
+	"amount": "0.1"
+}
