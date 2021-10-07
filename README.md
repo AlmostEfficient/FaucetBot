@@ -1,6 +1,15 @@
 # FaucetBot
 This is a Discord bot that dispenses Rinkeby ETH. 
 
+Features:
+* Full control over the wallet
+* Customisable funding amount (0.1 ETH by default)
+* No concurrent requests to prevent failed transactions due to nonce issues
+* Customisable per user cooldowns (1 hour by default)
+* Balance check and donation alert
+
+![image](https://user-images.githubusercontent.com/42661870/136471444-b91a48f6-bc66-48ed-b502-d51a65156c59.png)
+
 # Requirements
 * Yarn
 * Node.js > 16.6.0
