@@ -35,7 +35,7 @@ client.on('interactionCreate', async interaction => {
 	if (command.data.name === 'faucet') {
 		// If the last transaction was less than 15 seconds ago, disallow to prevent nonce reuse (no concurrent transactions ATM)
 		if (await keyv.get('lastTx') > Date.now() - 15000) {
-			const timeLeft = (await keyv.get('lastTx')) - Date.now();
+			const timeLeft = (Date.now() - await keyv.get('lastTx'));
 			return interaction.reply(`Please wait 15 seconds between requests to prevent nonce issues. Try again in ${timeLeft / 1000}s.`);
 		}
 
