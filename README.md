@@ -22,10 +22,17 @@ Note: Deploy is at guild level by default. You can change this by updating the `
 * Start the bot with
 ```bash
 node .
+# or with PM2 (recommended)
+pm2 start index.js 
 ```
+I highly recommend a process manager such as [PM2](https://pm2.keymetrics.io/) or [forever](https://github.com/foreversd/forever) to make sure the bot stays up.
 * Use `/faucet <address>` to request funds.
+* Use `/ping` to get balance and donation address.
 
 # Config
-You can change the following: 
-* Cooldown time: Update the `cooldown` value in the `config.json` file with a value in milliseconds. Defaults to `3600000` (1 hour).
-* Amount: Update the `amount` value in the `config.json` file with a string. Defaults to `0.1` ETH.
+You can change the following in the `config.json` file: 
+* `cooldown`: Wait time between requests per user. Takes a value in milliseconds. Set to `3600000` (1 hour) by default.
+* `amount`: how much to fund per request. Takes a string value. Set to `"0.1"` ETH by default.
+* `maxFeePerGas`: The maximum price (in wei) per unit of gas for transaction. Takes in a BigNumber. Set to `25000000000` (25 gwei) by default.
+* `activityType`: Discord activity for the bot. Options - `PLAYING`, `STREAMING`, `LISTENING`, `WATCHING`. Set to `WATCHING` by default.
+* `activityName`: Name of the activity. Set to `"Buildspace.so"` by default. This shows as "Watching Buildspace.so" in the bot's presence.

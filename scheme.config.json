@@ -6,5 +6,8 @@
 	"PRIVATE_KEY": "",
 	"ADDRESS": "",
 	"cooldown": 3600000,
-	"amount": "0.1"
+	"amount": "0.1",
+	"maxFeePerGas": 25000000000,
+	"activityType": "WATCHING",
+	"activityName": "Buildspace.so"
 }

@@ -1,4 +1,6 @@
+const { amount } = require('../config.json');
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const { MessageEmbed } = require('discord.js');
 const isAddress = require('../utils/address.js');
 const sendEther = require('../utils/send.js');
 
@@ -16,14 +18,16 @@ module.exports = {
 		if (!isAddress(address)) {
 			return interaction.reply('Please enter a valid Ethereum Address');
 		}
-		await	interaction.reply('Requesting funds from the faucet...');
-		// The second parameter is the amount, passed as a string. Defaults to '0.1' if not passed.
-		const tx = await sendEther(address)
-		if (tx.status === 'success') {
-			return interaction.followUp(`Successfully sent 0.1 ETH. Tx Hash: ${tx.message}`)
+		await	interaction.reply('Request made. Please wait for it to be mined.');
+		const request = await sendEther(address, amount);
+		if (request.status === 'success') {
+			const embed = new MessageEmbed()
+				.setColor('#3BA55C')
+				.setDescription(`[View transaction](https://rinkeby.etherscan.io/tx/${request.message})`);
+			return interaction.followUp({ content: `Successfully sent ${amount} ETH.`, embeds: [embed] });
 		}
 		else {
-			return interaction.followUp(`Failed to send funds. Error: ${tx.message}`);
+			return interaction.followUp(`Failed to send funds. Error: ${request.message}`);
 		}
 	},
 };

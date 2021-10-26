@@ -33,15 +33,17 @@ client.on('interactionCreate', async interaction => {
 
 	// Rate limiting and cooldowns for faucet requests
 	if (command.data.name === 'faucet') {
-		// If the last transaction was less than 10 seconds ago, disallow to prevent nonce reuse (no concurrent transactions ATM)
-		if (await keyv.get('lastTx') > Date.now() - 10000) {
-			return interaction.reply('Please wait 10 seconds between requests to prevent nonce issues.');
+		// If the last transaction was less than 15 seconds ago, disallow to prevent nonce reuse (no concurrent transactions ATM)
+		if (await keyv.get('lastTx') > Date.now() - 15000) {
+			const timeLeft = (await keyv.get('lastTx')) - Date.now();
+			return interaction.reply(`Please wait 15 seconds between requests to prevent nonce issues. Try again in ${timeLeft / 1000}s.`);
 		}
 
 		const lastRequested = await keyv.get(interaction.user.id);
 		if (lastRequested) {
 			if (Date.now() - lastRequested < cooldown) {
-				return interaction.reply('You can only request funds once every 60 minutes.');
+				const timeLeft = Math.floor(((cooldown - (Date.now() - lastRequested)) / 1000) / 60);
+				return interaction.reply(`You can only request funds once every 60 minutes. Please try again in ${timeLeft} minutes.`);
 			}
 		}
 	}
