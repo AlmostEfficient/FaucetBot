@@ -1,6 +1,7 @@
 const { Client, Collection, Intents } = require('discord.js');
 const { token, cooldown } = require('./config.json');
 const fs = require('fs');
+const isAddress = require('./utils/address');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 const Keyv = require('keyv');
 const keyv = new Keyv();
@@ -33,9 +34,16 @@ client.on('interactionCreate', async interaction => {
 
 	// Rate limiting and cooldowns for faucet requests
 	if (command.data.name === 'faucet') {
+		const address = interaction.options.get('address').value.trim();
+
+		if (!isAddress(address)) {
+			return interaction.reply('Please enter a valid Ethereum Address');
+		}
+
 		// If the last transaction was less than 15 seconds ago, disallow to prevent nonce reuse (no concurrent transactions ATM)
-		if (await keyv.get('lastTx') > Date.now() - 15000) {
-			const timeLeft = (Date.now() - await keyv.get('lastTx'));
+		const lastTx = await keyv.get('lastTx');
+		if (lastTx > Date.now() - 15000) {
+			const timeLeft = 15000 - (Date.now() - lastTx);
 			return interaction.reply(`Please wait 15 seconds between requests to prevent nonce issues. Try again in ${timeLeft / 1000}s.`);
 		}
 

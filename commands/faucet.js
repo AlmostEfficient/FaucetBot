@@ -1,7 +1,6 @@
 const { amount } = require('../config.json');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
-const isAddress = require('../utils/address.js');
 const sendEther = require('../utils/send.js');
 
 module.exports = {
@@ -15,9 +14,6 @@ module.exports = {
 	async execute(interaction) {
 		const address = interaction.options.get('address').value.trim();
 
-		if (!isAddress(address)) {
-			return interaction.reply('Please enter a valid Ethereum Address');
-		}
 		await	interaction.reply('Request made. Please wait for it to be mined.');
 		const request = await sendEther(address, amount);
 		if (request.status === 'success') {
