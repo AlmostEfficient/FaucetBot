@@ -1,15 +1,23 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { ALCHEMY_RINKEBY_URL, ADDRESS: FROM_ADDRESS } = require('../config.json');
-const { createAlchemyWeb3 } = require('@alch/alchemy-web3');
-const web3 = createAlchemyWeb3(ALCHEMY_RINKEBY_URL)
+const { ALCHEMY_RINKEBY_URL, INFURA_RINKEBY_URL, FROM_ADDRESS, infura } = require('../config.json');
+const ethers = require('ethers');
+const provider = new ethers.providers.JsonRpcProvider(infura ? INFURA_RINKEBY_URL : ALCHEMY_RINKEBY_URL);
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('ping')
-		.setDescription('Replies with Pong!'),
+		.setDescription('Replies with Pong!, configured provider, faucet balance and donation address.'),
 	async execute(interaction) {
-		const balance = web3.utils.fromWei(await web3.eth.getBalance(FROM_ADDRESS), 'ether');
+		let balance;
+		try {
+			balance = await ethers.utils.formatEther(await provider.getBalance(FROM_ADDRESS));
+		}
+		catch (e) {
+			console.log(e);
+			return interaction.reply('Error getting balance. Please check logs.');
+		}
+
 		const balanceShort = balance.toString().slice(0, balance.toString().indexOf('.') + 3);
-		return interaction.reply(`Pong! Current balance: ${balanceShort} ETH. Please use /faucet to request funds.\nDonate: ${FROM_ADDRESS}`);
+		return interaction.reply(`Pong! Provider: ${infura ? 'Infura' : 'Alchemy'}. Current balance: ${balanceShort} ETH. Please use /faucet to request funds.\nDonate: ${FROM_ADDRESS}`);
 	},
 };
