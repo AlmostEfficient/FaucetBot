@@ -1,7 +1,8 @@
-const { amount } = require('../config.json');
+const { amount, infura } = require('../config.json');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
-const sendEther = require('../utils/send.js');
+const sendViaAlchemy = require('../utils/sendViaAlchemy.js');
+const sendViaInfura = require('../utils/sendViaInfura.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -14,13 +15,21 @@ module.exports = {
 	async execute(interaction) {
 		const address = interaction.options.get('address').value.trim();
 
-		await	interaction.reply('Request made. Please wait for it to be mined.');
-		const request = await sendEther(address, amount);
+		const reply = infura ?
+			'Request sent to Infura. Please check the link to see if it\'s mined.'
+			:
+			// TODO: Change this to "Please wait for it to be mined" once Alchemy Notify is set up.
+			'Request sent to Alchemy. Please check the link to see if it\'s mined.';
+
+		await	interaction.reply(reply);
+
+		const request = infura ? await sendViaInfura(address, amount) : await sendViaAlchemy(address, amount);
+
 		if (request.status === 'success') {
 			const embed = new MessageEmbed()
 				.setColor('#3BA55C')
-				.setDescription(`[View transaction](https://rinkeby.etherscan.io/tx/${request.message})`);
-			return interaction.followUp({ content: `Successfully sent ${amount} ETH.`, embeds: [embed] });
+				.setDescription(`[View on Etherscan](https://rinkeby.etherscan.io/tx/${request.message})`);
+			return interaction.followUp({ content: `Transaction for ${amount} ETH created.`, embeds: [embed] });
 		}
 		else {
 			return interaction.followUp(`Failed to send funds. Error: ${request.message}`);

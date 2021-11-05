@@ -3,11 +3,13 @@
   "guildId": "",
   "token": "",
 	"ALCHEMY_RINKEBY_URL": "",
+	"INFURA_RINKEBY_URL": "",
 	"PRIVATE_KEY": "",
-	"ADDRESS": "",
+	"FROM_ADDRESS": "",
 	"cooldown": 3600000,
 	"amount": "0.1",
-	"maxFeePerGas": 25000000000,
+	"maxFeePerGas": 95000000000,
 	"activityType": "WATCHING",
-	"activityName": "Buildspace.so"
+	"activityName": "Buildspace.so",
+	"infura": false
 }
