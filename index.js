@@ -1,5 +1,5 @@
 const { Client, Collection, Intents } = require('discord.js');
-const { token, cooldown } = require('./config.json');
+const { token, cooldown, approvedRoles } = require('./config.json');
 const fs = require('fs');
 const isAddress = require('./utils/address');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
@@ -47,11 +47,13 @@ client.on('interactionCreate', async interaction => {
 			return interaction.reply(`Please wait 15 seconds between requests to prevent nonce issues. Try again in ${timeLeft / 1000}s.`);
 		}
 
-		const lastRequested = await keyv.get(interaction.user.id);
-		if (lastRequested) {
-			if (Date.now() - lastRequested < cooldown) {
-				const timeLeft = Math.floor(((cooldown - (Date.now() - lastRequested)) / 1000) / 60);
-				return interaction.reply(`You can only request funds once every 60 minutes. Please try again in ${timeLeft} minutes.`);
+		if (!approvedRoles.some(role => interaction.member.roles.cache.has(role))) {
+			const lastRequested = await keyv.get(interaction.user.id);
+			if (lastRequested) {
+				if (Date.now() - lastRequested < cooldown) {
+					const timeLeft = Math.floor(((cooldown - (Date.now() - lastRequested)) / 1000) / 60);
+					return interaction.reply(`You can only request funds once every 60 minutes. Please try again in ${timeLeft} minutes.`);
+				}
 			}
 		}
 	}
@@ -59,7 +61,10 @@ client.on('interactionCreate', async interaction => {
 	try {
 		await command.execute(interaction);
 		if (command.data.name === 'faucet') {
-			await keyv.set(interaction.user.id, Date.now());
+			// If not an approved role, set the last requested time
+			if (!approvedRoles.some(role => interaction.member.roles.cache.has(role))) {
+				await keyv.set(interaction.user.id, Date.now());
+			}
 			await keyv.set('lastTx', Date.now());
 		}
 	}
