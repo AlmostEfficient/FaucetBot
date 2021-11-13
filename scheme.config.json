@@ -13,4 +13,26 @@
 	"activityName": "Buildspace.so",
 	"infura": false,
 	"approvedRoles": ["869338295207870485", "869605103701737482", "869605623208214573", "902645751631454258"],
+	"watchlist": [
+		{
+			"label": "Official Rinkeby faucet",
+			"url": "https://faucet.rinkeby.io/",
+			"address": "0x31B98D14007bDEe637298086988A0bBd31184523"
+		},
+		{
+			"label": "Buildspace Discord faucet",
+			"url": "https://discord.gg/vPmqZqgpsS",
+			"address": "0xfee51018dd2c4cda72122a2d53e639f88ee4c2d3"
+		},
+		{
+			"label": "Chainlink Rinkeby faucet",
+			"url": "https://faucets.chain.link/rinkeby",
+			"address": "0xa7a82dd06901f29ab14af63faf3358ad101724a8"
+		},
+		{
+			"label": "MyCrypto faucet",
+			"url": "https://app.mycrypto.com/faucet",
+			"address": "0xa500B2427458D12Ef70dd7b1E031ef99d1cc09f7"
+		}
+	]
 }
